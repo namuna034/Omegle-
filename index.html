@@ -14,8 +14,44 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   </head>
   <body>
+    <!-- Login / Signup Modal -->
+    <div id="login-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 99999;">
+      <div style="background: #1e1e2f; padding: 30px; border-radius: 12px; text-align: center; width: 320px; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
+        <h2>Welcome to Omegle Web</h2>
+        <p style="color: #bbb; font-size: 14px; margin-bottom: 20px;">Enter your name to create your ID and start chatting</p>
+        
+        <input type="text" id="username-input" placeholder="Enter your Name / ID" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #444; background: #2a2a40; color: white; font-size: 16px; box-sizing: border-box;">
+        
+        <button onclick="handleLogin()" style="width: 100%; padding: 10px; background: #4f46e5; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: bold;">Start Chatting</button>
+      </div>
+    </div>
+
+    <!-- Main App Root -->
     <div id="root"></div>
+
+    <script>
+      // चेक करें कि क्या यूज़र पहले से लॉगिन है या नहीं
+      window.addEventListener('DOMContentLoaded', () => {
+        const savedUser = localStorage.getItem('omegle_username');
+        if (savedUser) {
+          document.getElementById('login-modal').style.display = 'none';
+        }
+      });
+
+      // लॉगिन बटन दबाने पर चलने वाला फंक्शन
+      function handleLogin() {
+        const username = document.getElementById('username-input').value.trim();
+        if (username === '') {
+          alert('Please enter a valid name!');
+          return;
+        }
+        // यूज़रनेम को ब्राउज़र में सेव करें
+        localStorage.setItem('omegle_username', username);
+        // लॉगिन बॉक्स को छुपा दें ताकि पीछे की चैट साइट दिखने लगे
+        document.getElementById('login-modal').style.display = 'none';
+      }
+    </script>
+
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
-
