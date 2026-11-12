@@ -12,43 +12,211 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <style>
+      #auth-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.78);
+        backdrop-filter: blur(4px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 2147483647;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        padding: 16px;
+      }
+      .auth-card {
+        background: #ffffff;
+        color: #111827;
+        width: 100%;
+        max-width: 370px;
+        border-radius: 20px;
+        padding: 32px 24px 24px;
+        position: relative;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+        text-align: center;
+      }
+      .auth-close {
+        position: absolute;
+        top: -42px;
+        right: 4px;
+        background: transparent;
+        border: none;
+        color: #ffffff;
+        font-size: 26px;
+        cursor: pointer;
+        line-height: 1;
+      }
+      .auth-title {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0 0 22px;
+        color: #111827;
+      }
+      .auth-input {
+        width: 100%;
+        padding: 14px 16px;
+        border-radius: 12px;
+        border: none;
+        background: #e5e7eb;
+        color: #111827;
+        font-size: 15px;
+        outline: none;
+        box-sizing: border-box;
+        margin-bottom: 14px;
+      }
+      .auth-input:focus {
+        box-shadow: 0 0 0 2px #0066ff;
+        background: #f3f4f6;
+      }
+      .auth-switch {
+        font-size: 14px;
+        color: #374151;
+        margin: 0 0 20px;
+      }
+      .auth-switch a {
+        color: #0066ff;
+        text-decoration: underline;
+        font-weight: 600;
+        cursor: pointer;
+      }
+      .auth-btn {
+        width: 100%;
+        padding: 14px;
+        border-radius: 12px;
+        border: none;
+        background: #0066ff;
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .auth-btn:hover {
+        background: #0052cc;
+      }
+      .auth-divider {
+        display: flex;
+        align-items: center;
+        color: #9ca3af;
+        font-size: 13px;
+        margin: 20px 0 16px;
+      }
+      .auth-divider::before, .auth-divider::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: #e5e7eb;
+      }
+      .auth-divider span {
+        padding: 0 10px;
+      }
+      .social-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+      .social-btn {
+        flex: 1;
+        height: 44px;
+        border-radius: 10px;
+        border: 1px solid #e5e7eb;
+        background: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 16px;
+        box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+      }
+      .social-btn:hover {
+        background: #f9fafb;
+      }
+      .auth-terms {
+        font-size: 11px;
+        color: #6b7280;
+        line-height: 1.4;
+        margin: 0;
+      }
+      .auth-terms a {
+        color: #374151;
+        text-decoration: underline;
+      }
+    </style>
   </head>
   <body>
-    <!-- Login / Signup Modal -->
-    <div id="login-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center; z-index: 99999;">
-      <div style="background: #1e1e2f; padding: 30px; border-radius: 12px; text-align: center; width: 320px; color: white; box-shadow: 0 4px 15px rgba(0,0,0,0.5);">
-        <h2>Welcome to Omegle Web</h2>
-        <p style="color: #bbb; font-size: 14px; margin-bottom: 20px;">Enter your name to create your ID and start chatting</p>
+    <!-- Modern Sign Up / Sign In Modal -->
+    <div id="auth-overlay">
+      <div class="auth-card">
+        <button class="auth-close" onclick="closeAuthModal()" title="Close">&times;</button>
+        <h2 class="auth-title" id="auth-heading">Sign up</h2>
         
-        <input type="text" id="username-input" placeholder="Enter your Name / ID" style="width: 100%; padding: 10px; margin-bottom: 15px; border-radius: 6px; border: 1px solid #444; background: #2a2a40; color: white; font-size: 16px; box-sizing: border-box;">
+        <input type="email" id="auth-email" class="auth-input" placeholder="Enter your email" />
         
-        <button onclick="handleLogin()" style="width: 100%; padding: 10px; background: #4f46e5; color: white; border: none; border-radius: 6px; font-size: 16px; cursor: pointer; font-weight: bold;">Start Chatting</button>
+        <p class="auth-switch" id="auth-toggle-text">
+          Already have an account? <a onclick="toggleAuthMode()">Sign in</a>
+        </p>
+        
+        <button class="auth-btn" onclick="submitAuth()">Continue</button>
+        
+        <div class="auth-divider"><span>or continue with</span></div>
+        
+        <div class="social-row">
+          <button class="social-btn" onclick="socialLogin('Google')" style="color:#EA4335;">G</button>
+          <button class="social-btn" onclick="socialLogin('Apple')" style="color:#000000;"></button>
+          <button class="social-btn" onclick="socialLogin('X')" style="color:#000000;">𝕏</button>
+          <button class="social-btn" onclick="socialLogin('Yandex')" style="color:#FC3F1D;">Я</button>
+          <button class="social-btn" onclick="socialLogin('VK')" style="background:#0077FF;color:#fff;border:none;">VK</button>
+          <button class="social-btn" onclick="socialLogin('Mail')" style="color:#F59E0B;">@</button>
+        </div>
+        
+        <p class="auth-terms">
+          By continuing, you agree to the <a href="#">Terms and Conditions</a> and confirm that you have read the <a href="#">Privacy Policy</a>.
+        </p>
       </div>
     </div>
 
-    <!-- Main App Root -->
     <div id="root"></div>
 
     <script>
-      // चेक करें कि क्या यूज़र पहले से लॉगिन है या नहीं
-      window.addEventListener('DOMContentLoaded', () => {
-        const savedUser = localStorage.getItem('omegle_username');
-        if (savedUser) {
-          document.getElementById('login-modal').style.display = 'none';
-        }
-      });
+      let isSignUp = true;
 
-      // लॉगिन बटन दबाने पर चलने वाला फंक्शन
-      function handleLogin() {
-        const username = document.getElementById('username-input').value.trim();
-        if (username === '') {
-          alert('Please enter a valid name!');
+      // पेज लोड होते ही चेक करें कि यूज़र पहले लॉगिन कर चुका है या नहीं
+      (function checkAuth() {
+        const user = localStorage.getItem('omegle_user_email');
+        if (user) {
+          document.getElementById('auth-overlay').style.display = 'none';
+        }
+      })();
+
+      function toggleAuthMode() {
+        isSignUp = !isSignUp;
+        document.getElementById('auth-heading').innerText = isSignUp ? 'Sign up' : 'Sign in';
+        document.getElementById('auth-toggle-text').innerHTML = isSignUp
+          ? 'Already have an account? <a onclick="toggleAuthMode()">Sign in</a>'
+          : 'Don\'t have an account? <a onclick="toggleAuthMode()">Sign up</a>';
+      }
+
+      function submitAuth() {
+        const email = document.getElementById('auth-email').value.trim();
+        if (!email || !email.includes('@')) {
+          alert('Please enter a valid email address!');
           return;
         }
-        // यूज़रनेम को ब्राउज़र में सेव करें
-        localStorage.setItem('omegle_username', username);
-        // लॉगिन बॉक्स को छुपा दें ताकि पीछे की चैट साइट दिखने लगे
-        document.getElementById('login-modal').style.display = 'none';
+        localStorage.setItem('omegle_user_email', email);
+        document.getElementById('auth-overlay').style.display = 'none';
+      }
+
+      function socialLogin(provider) {
+        const guestId = provider + '_User_' + Math.floor(1000 + Math.random() * 9000);
+        localStorage.setItem('omegle_user_email', guestId);
+        document.getElementById('auth-overlay').style.display = 'none';
+      }
+
+      function closeAuthModal() {
+        document.getElementById('auth-overlay').style.display = 'none';
       }
     </script>
 
